@@ -1,6 +1,5 @@
-import { useCallback } from 'react';
 import { FORECAST_HOURS } from '../types';
-import type { ForecastState, ScenarioPersistence } from '../types';
+import type { ScenarioPersistence } from '../types';
 
 interface TimelineProps {
   currentHour: number;
@@ -11,12 +10,6 @@ interface TimelineProps {
   onStop: () => void;
 }
 
-const STATUS_DOT: Record<string, string> = {
-  Persistent: 'bg-[#34c759]',
-  Emerging: 'bg-[#ff9f0a]',
-  'Scale-sensitive': 'bg-[#0071e3]',
-  Transient: 'bg-[#aeaeb2]',
-};
 
 export default function ForecastTimeline({ currentHour, isPlaying, scenarios, onHourChange, onPlay, onStop }: TimelineProps) {
   const hourIndex = FORECAST_HOURS.indexOf(currentHour);
@@ -72,7 +65,7 @@ export default function ForecastTimeline({ currentHour, isPlaying, scenarios, on
         />
 
         <div className="flex justify-between mt-1">
-          {FORECAST_HOURS.map((fh, i) => (
+          {FORECAST_HOURS.map((fh) => (
             <button
               key={fh}
               onClick={() => onHourChange(fh)}

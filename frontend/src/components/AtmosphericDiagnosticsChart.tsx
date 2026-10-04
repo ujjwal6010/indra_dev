@@ -48,14 +48,14 @@ export default function AtmosphericDiagnosticsChart({ atmosphere }: AtmosphericD
       {
         name: 'Temperature',
         type: 'bar',
-        data: temps.map((t, i) => ({ value: t, itemStyle: { color: MEMBER_COLORS[members[i]] || '#0071e3' } })),
+        data: temps.map((t) => ({ value: t, itemStyle: { color: MEMBER_COLORS[members[0]] || '#0071e3' } })),
         yAxisIndex: 0,
         barBorderRadius: [4, 4, 0, 0],
       },
       {
         name: 'Wind Speed',
         type: 'bar',
-        data: winds.map((w, i) => ({ value: w, itemStyle: { color: 'rgba(174, 174, 178, 0.3)' } })),
+        data: winds.map((w) => ({ value: w, itemStyle: { color: 'rgba(174, 174, 178, 0.3)' } })),
         yAxisIndex: 1,
         barBorderRadius: [4, 4, 0, 0],
       }

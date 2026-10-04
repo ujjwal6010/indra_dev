@@ -16,7 +16,7 @@ interface EventExplorerProps {
   onHourChange: (h: number) => void;
 }
 
-export default function EventExplorer({ currentHour, onHourChange }: EventExplorerProps) {
+export default function EventExplorer({ onHourChange }: EventExplorerProps) {
   const [events, setEvents] = useState<ExtremeEvent[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<ExtremeEvent | null>(null);
   const [memberFilter, setMemberFilter] = useState<string | null>(null);

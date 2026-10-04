@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { api } from '../services/api';
 import type { ScenarioPersistence, TrackPoint } from '../types';
-import { MEMBERS } from '../types';
 import IntensityChart from './IntensityChart';
 import TrajectoryChart from './TrajectoryChart';
 import AtmosphericDiagnosticsChart from './AtmosphericDiagnosticsChart';
@@ -63,9 +62,6 @@ export default function ScenarioDrawer({ scenarioId, onClose }: ScenarioDrawerPr
 
   if (!scenario) return null;
 
-  const atmMembers = atmosphere?.members ?? {};
-  const temps = Object.values(atmMembers).map((m: any) => m.temperature_c).filter((v: any) => v != null) as number[];
-  const avgTemp = temps.length ? (temps.reduce((a, b) => a + b, 0) / temps.length).toFixed(1) : '--';
 
   return (
     <div ref={drawerRef} className="w-80 bg-white border-l border-[#e5e5ea] h-full overflow-y-auto flex flex-col animate-fade-in-up shadow-panel">

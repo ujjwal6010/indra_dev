@@ -10,8 +10,8 @@ A spatio-temporal ensemble intelligence system for extreme precipitation that de
 ![React](https://img.shields.io/badge/React-19-61DAFB)
 ![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178C6)
 
-**Frontend:** `http://localhost:5173` (Local Dev)  
-**Backend API:** `http://localhost:8000` (Local Dev)
+**Frontend (Live Dashboard):** [https://deploy-indradev.vercel.app](https://deploy-indradev.vercel.app)  
+**Backend API (Live Server):** [https://deploy-indradev.onrender.com/docs](https://deploy-indradev.onrender.com/docs)
 
 | Field | Details |
 |---|---|

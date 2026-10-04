@@ -10,7 +10,7 @@ import EventExplorer from './components/EventExplorer';
 import AboutPanel from './components/AboutPanel';
 import { exportElementAsPng } from './utils/exportPng';
 import { useForecastState, useScenarios, useScaleAnalysis, useCycles, useForecastReplay } from './hooks/useWeatherData';
-import { FORECAST_HOURS, SCALES_KM } from './types';
+import { SCALES_KM } from './types';
 import type { ScenarioPersistence } from './types';
 
 export default function App() {

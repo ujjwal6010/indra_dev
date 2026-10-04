@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import * as maplibregl from 'maplibre-gl';
-import 'maplibre-gl/dist/maplibre-gl.css';
+const maplibregl = (window as any).maplibregl;
+
 import type { ForecastState, ScenarioPersistence, TrackPoint } from '../types';
 import { MEMBERS } from '../types';
 import { api } from '../services/api';
@@ -9,7 +9,7 @@ interface MapViewProps {
   forecastState: ForecastState | null;
   scenarios: ScenarioPersistence[];
   selectedScenarioId: string | null;
-  onScenarioClick: (id: string) => void;
+  onScenarioClick?: (id: string) => void;
   showSpaghetti?: boolean;
 }
 
@@ -19,17 +19,16 @@ const MEMBER_COLORS: Record<string, string> = {
 };
 
 // Study region bounds: 5N–38N, 65E–100E
-const STUDY_BOUNDS: maplibregl.LngLatBoundsLike = [[65, 5], [100, 38]];
 
-export default function MapView({ forecastState, scenarios, selectedScenarioId, onScenarioClick, showSpaghetti = false }: MapViewProps) {
+export default function MapView({ forecastState, scenarios, selectedScenarioId, showSpaghetti = false }: MapViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<maplibregl.Map | null>(null);
+  const mapRef = useRef<any | null>(null);
   const [allTracks, setAllTracks] = useState<TrackPoint[]>([]);
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
 
-    mapRef.current = new maplibregl.Map({
+    mapRef.current = new (maplibregl as any).Map({
       container: containerRef.current,
       style: {
         version: 8,
@@ -41,7 +40,6 @@ export default function MapView({ forecastState, scenarios, selectedScenarioId, 
           }
         },
         layers: [{ id: 'osm', type: 'raster', source: 'osm', paint: { 'raster-opacity': 0.45, 'raster-saturation': -0.3 } }],
-        background: { type: 'background', paint: { 'background-color': '#f5f5f7' } } as any,
       },
       center: [82, 20],
       zoom: 4.5,
@@ -142,7 +140,7 @@ export default function MapView({ forecastState, scenarios, selectedScenarioId, 
         paint: { 'line-color': ['get', 'color'], 'line-width': 2, 'line-opacity': 0.5, 'line-dasharray': [3, 2] },
       });
 
-      map.addControl(new maplibregl.NavigationControl(), 'top-right');
+      map.addControl(new (maplibregl as any).NavigationControl(), 'top-right');
     });
 
     return () => { mapRef.current?.remove(); mapRef.current = null; };
@@ -186,7 +184,7 @@ export default function MapView({ forecastState, scenarios, selectedScenarioId, 
           member: evt.member,
         },
       }));
-      (map.getSource('footprints') as maplibregl.GeoJSONSource)?.setData({
+      (map.getSource('footprints') as any)?.setData({
         type: 'FeatureCollection',
         features: footprintFeatures,
       });
@@ -201,7 +199,7 @@ export default function MapView({ forecastState, scenarios, selectedScenarioId, 
           member: evt.member,
         },
       }));
-      (map.getSource('centroids') as maplibregl.GeoJSONSource)?.setData({
+      (map.getSource('centroids') as any)?.setData({
         type: 'FeatureCollection',
         features: centroidFeatures,
       });
@@ -232,7 +230,7 @@ export default function MapView({ forecastState, scenarios, selectedScenarioId, 
       };
     }) ?? [];
 
-    (map.getSource('scenario-halos') as maplibregl.GeoJSONSource)?.setData({
+    (map.getSource('scenario-halos') as any)?.setData({
       type: 'FeatureCollection',
       features: haloFeatures,
     });
@@ -253,12 +251,12 @@ export default function MapView({ forecastState, scenarios, selectedScenarioId, 
           },
         };
       });
-      (map.getSource('tracks') as maplibregl.GeoJSONSource)?.setData({
+      (map.getSource('tracks') as any)?.setData({
         type: 'FeatureCollection',
         features: trackFeatures,
       });
     } else {
-      (map.getSource('tracks') as maplibregl.GeoJSONSource)?.setData({
+      (map.getSource('tracks') as any)?.setData({
         type: 'FeatureCollection',
         features: [],
       });

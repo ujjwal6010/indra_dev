@@ -9,7 +9,7 @@ export default function AboutPanel({ onClose }: AboutPanelProps) {
   const panelRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div ref={panelRef} className="absolute top-4 left-4 w-96 glass rounded-2xl p-5 z-40 animate-fade-in-up max-h-[80vh] overflow-y-auto">
+    <div ref={panelRef} className="absolute top-4 left-4 w-96 bg-white/95 backdrop-blur-xl shadow-2xl border border-[#e5e5ea] rounded-2xl p-5 z-40 animate-fade-in-up max-h-[80vh] overflow-y-auto">
       <div className="flex justify-between items-start mb-4">
         <div className="text-sm font-semibold text-[#1d1d1f]">Why This Is Different</div>
         <div className="flex items-center gap-2">

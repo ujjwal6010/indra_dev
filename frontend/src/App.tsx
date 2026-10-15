@@ -211,130 +211,134 @@ export default function App() {
         </div>
       </header>
 
-      <div className="flex flex-1 overflow-hidden">
-        {/* ── Left sidebar ── */}
-        <div className="w-[320px] flex flex-col border-r border-[#e5e5ea] bg-[#f8f9fa] shrink-0 relative overflow-y-auto overflow-x-hidden">
-          <div className="relative z-10 flex flex-col divide-y divide-[#e5e5ea]/60">
-            {/* STUDY REGION */}
-            <div className="p-4">
-              <div className="flex items-center gap-2 mb-3">
-                <h3 className="text-[12px] font-bold text-[#1d2b45] uppercase tracking-wider">Study Region</h3>
-              </div>
-              <div className="bg-white rounded-xl p-3 shadow-sm border border-[#e5e5ea]">
-                <div className="flex items-center justify-between mb-3 cursor-pointer group">
-                  <span className="text-[13px] font-semibold text-[#4b5563]">5°N - 38°N 65°E - 100°E</span>
-                </div>
-                <div className="flex items-center gap-3">
-                   <div className="flex flex-col items-center gap-1 w-1/3 text-center">
-                     <span className="text-[10px] text-[#6e6e73] leading-tight font-medium">India & Surrounding Region</span>
-                   </div>
-                   <div className="w-2/3 h-16 bg-[#e8f4fd] rounded-lg border border-[#0071e3]/20 relative overflow-hidden flex items-center justify-center">
-                     <img src="/india-map.png?v=2" alt="India Map" className="absolute inset-0 w-full h-full object-contain p-2.5 opacity-90" />
-                   </div>
-                </div>
-              </div>
+      {/* Main workspace: sidebar, map/content, and scenario drawer sit side by side. */}
+      <div className="flex flex-1 min-h-0 overflow-hidden">
+          {/* ── Left sidebar ── */}
+      <div className="w-[320px] flex flex-col border-r border-[#e5e5ea] bg-[#f8f9fa] shrink-0 relative overflow-y-auto overflow-x-hidden z-30">
+        <div className="relative z-30 flex flex-col divide-y divide-[#e5e5ea]/60">
+          
+          {/* STUDY REGION */}
+          <div className="p-4">
+            <div className="flex items-center gap-2 mb-3">
+              <h3 className="text-[12px] font-bold text-[#1d2b45] uppercase tracking-wider">Study Region</h3>
             </div>
-
-            {/* SPATIAL SCALE */}
-            <div className="p-4">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-[12px] font-bold text-[#1d2b45] uppercase tracking-wider">Spatial Scale <span className="text-[#9ca3af] font-medium lowercase">(km)</span></h3>
+            <div className="bg-white rounded-xl p-3 shadow-sm border border-[#e5e5ea]">
+              <div className="flex items-center justify-between mb-3 cursor-pointer group">
+                <span className="text-[13px] font-semibold text-[#4b5563]">5°N - 38°N 65°E - 100°E</span>
               </div>
-              <div className="flex gap-2">
-                {SCALES_KM.map(s => (
-                  <button
-                    key={s}
-                    onClick={() => setScaleKm(s)}
-                    className={`flex-1 py-1.5 rounded-lg border transition-all font-semibold text-[13px] cursor-pointer ${s === scaleKm
-                        ? 'bg-[#0071e3] border-[#0071e3] text-white shadow-sm'
-                        : 'bg-white border-[#e5e5ea] text-[#4b5563] hover:border-[#d1d1d6] hover:text-[#1d1d1f] shadow-sm'
-                      }`}
-                  >
-                    {s}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* THRESHOLD */}
-            <div className="p-4">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-[12px] font-bold text-[#1d2b45] uppercase tracking-wider">Threshold</h3>
-              </div>
-              <div className="bg-white border border-[#e5e5ea] rounded-xl px-4 py-3 text-[13px] font-semibold text-[#1d2b45] shadow-sm flex items-center justify-between cursor-pointer hover:border-[#d1d1d6] transition-all">
-                95th percentile
-              </div>
-            </div>
-
-           {/* MEMBERS SECTION - FULLY INTERACTIVE & NO TEXT CURSOR */}
-            <div className="p-4">
-              <div className="flex items-center justify-between mb-3 select-none">
-                <h3 className="text-[12px] font-bold text-[#1d2b45] uppercase tracking-wider">Members</h3>
-              </div>
-              <div className="bg-white rounded-xl shadow-sm border border-[#e5e5ea] p-4 select-none">
-                <div className="grid grid-cols-2 gap-y-3 mb-4">
-                  {MEMBER_LIST.map((m) => {
-                    const isChecked = selectedMembers.includes(m.id);
-                    return (
-                      <button
-                        type="button"
-                        key={m.id} 
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggleMember(m.id);
-                        }}
-                        className="flex items-center gap-2.5 cursor-pointer group select-none outline-none border-none bg-transparent p-0 text-left"
-                      >
-                        <div 
-                          className="w-[18px] h-[18px] rounded-[5px] border flex items-center justify-center transition-all shadow-sm shrink-0 cursor-pointer"
-                          style={{ 
-                            backgroundColor: isChecked ? m.color : '#ffffff',
-                            borderColor: isChecked ? m.color : '#d1d1d6'
-                          }}
-                        >
-                          {isChecked && (
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
-                              <polyline points="20 6 9 17 4 12"/>
-                            </svg>
-                          )}
-                        </div>
-                        <span className="text-[13px] font-medium text-[#4b5563] group-hover:text-[#1d2b45] transition-colors pointer-events-none select-none">
-                          {m.label}
-                        </span>
-                      </button>
-                    );
-                  })}
+              <div className="flex items-center gap-3">
+                <div className="flex flex-col items-center gap-1 w-1/3 text-center">
+                  <span className="text-[10px] text-[#6e6e73] leading-tight font-medium">India & Surrounding Region</span>
                 </div>
-                <div className="pt-3 border-t border-[#e5e5ea] flex items-center justify-between select-none">
-                  <button 
-                    type="button"
-                    onClick={selectAllMembers} 
-                    className="text-[13px] font-medium text-[#4b5563] hover:text-[#1d2b45] transition-colors cursor-pointer bg-transparent border-none p-0"
-                  >
-                    Select all
-                  </button>
-                  <button 
-                    type="button"
-                    onClick={clearAllMembers} 
-                    className="text-[13px] font-bold text-[#0071e3] hover:text-[#005bb5] transition-colors cursor-pointer bg-transparent border-none p-0"
-                  >
-                    Clear
-                  </button>
+                <div className="w-2/3 h-16 bg-[#e8f4fd] rounded-lg border border-[#0071e3]/20 relative overflow-hidden flex items-center justify-center">
+                  <img src="/india-map.png?v=2" alt="India Map" className="absolute inset-0 w-full h-full object-contain p-2.5 opacity-90" />
                 </div>
               </div>
-            </div>
-
-            {/* Scenario list */}
-            <div className="p-4 flex-1">
-              <ScenarioPanel
-                scenarios={scenarios}
-                selectedId={selectedScenarioId}
-                currentHour={currentHour}
-                onSelect={id => setSelectedScenarioId(prev => prev === id ? null : id)}
-              />
             </div>
           </div>
+
+          {/* SPATIAL SCALE */}
+          <div className="p-4">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-[12px] font-bold text-[#1d2b45] uppercase tracking-wider">Spatial Scale <span className="text-[#9ca3af] font-medium lowercase">(km)</span></h3>
+            </div>
+            <div className="flex gap-2">
+              {SCALES_KM.map(s => (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => setScaleKm(s)}
+                  className={`flex-1 py-1.5 rounded-lg border transition-all font-semibold text-[13px] cursor-pointer relative z-30 ${s === scaleKm
+                      ? 'bg-[#0071e3] border-[#0071e3] text-white shadow-sm'
+                      : 'bg-white border-[#e5e5ea] text-[#4b5563] hover:border-[#d1d1d6] hover:text-[#1d1d1f] shadow-sm'
+                    }`}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* THRESHOLD */}
+          <div className="p-4">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-[12px] font-bold text-[#1d2b45] uppercase tracking-wider">Threshold</h3>
+            </div>
+            <div className="bg-white border border-[#e5e5ea] rounded-xl px-4 py-3 text-[13px] font-semibold text-[#1d2b45] shadow-sm flex items-center justify-between cursor-pointer hover:border-[#d1d1d6] transition-all">
+              95th percentile
+            </div>
+          </div>
+
+          {/* MEMBERS - DIRECT INPUT CHECKBOXES */}
+          <div className="p-4">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-[12px] font-bold text-[#1d2b45] uppercase tracking-wider">Members</h3>
+            </div>
+            <div className="bg-white rounded-xl shadow-sm border border-[#e5e5ea] p-4 relative z-30">
+              <div className="grid grid-cols-2 gap-y-3 mb-4">
+                {MEMBER_LIST.map((m) => {
+                  const isChecked = selectedMembers.includes(m.id);
+                  return (
+                    <label 
+                      key={m.id} 
+                      className="flex items-center gap-2.5 cursor-pointer select-none relative z-30"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleMember(m.id);
+                      }}
+                    >
+                      <div 
+                        className="w-[18px] h-[18px] rounded-[5px] border flex items-center justify-center transition-all shadow-sm shrink-0"
+                        style={{ 
+                          backgroundColor: isChecked ? m.color : '#ffffff',
+                          borderColor: isChecked ? m.color : '#d1d1d6'
+                        }}
+                      >
+                        {isChecked && (
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="20 6 9 17 4 12"/>
+                          </svg>
+                        )}
+                      </div>
+                      <span className="text-[13px] font-medium text-[#4b5563] hover:text-[#1d2b45] transition-colors pointer-events-none">
+                        {m.label}
+                      </span>
+                    </label>
+                  );
+                })}
+              </div>
+              <div className="pt-3 border-t border-[#e5e5ea] flex items-center justify-between">
+                <button 
+                  type="button"
+                  onClick={selectAllMembers} 
+                  className="text-[13px] font-medium text-[#4b5563] hover:text-[#1d2b45] transition-colors cursor-pointer bg-transparent border-none p-0 relative z-30"
+                >
+                  Select all
+                </button>
+                <button 
+                  type="button"
+                  onClick={clearAllMembers} 
+                  className="text-[13px] font-bold text-[#0071e3] hover:text-[#005bb5] transition-colors cursor-pointer bg-transparent border-none p-0 relative z-30"
+                >
+                  Clear
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Scenario list */}
+          <div className="p-4 flex-1">
+            <ScenarioPanel
+              scenarios={scenarios}
+              selectedId={selectedScenarioId}
+              currentHour={currentHour}
+              onSelect={id => setSelectedScenarioId(prev => prev === id ? null : id)}
+            />
+          </div>
         </div>
+      </div>
+
+            
 
         {/* ── Main content ── */}
         <div className="flex-1 relative flex flex-col overflow-hidden">
@@ -440,7 +444,7 @@ export default function App() {
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
+      </div>{/* End main workspace */}
 
       <ForecastTimeline
         currentHour={currentHour}

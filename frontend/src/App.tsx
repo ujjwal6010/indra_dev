@@ -266,23 +266,27 @@ export default function App() {
               </div>
             </div>
 
-            {/* MEMBERS */}
+           {/* MEMBERS SECTION - FULLY INTERACTIVE & NO TEXT CURSOR */}
             <div className="p-4">
-              <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center justify-between mb-3 select-none">
                 <h3 className="text-[12px] font-bold text-[#1d2b45] uppercase tracking-wider">Members</h3>
               </div>
-              <div className="bg-white rounded-xl shadow-sm border border-[#e5e5ea] p-4">
+              <div className="bg-white rounded-xl shadow-sm border border-[#e5e5ea] p-4 select-none">
                 <div className="grid grid-cols-2 gap-y-3 mb-4">
                   {MEMBER_LIST.map((m) => {
                     const isChecked = selectedMembers.includes(m.id);
                     return (
-                      <div 
+                      <button
+                        type="button"
                         key={m.id} 
-                        onClick={() => toggleMember(m.id)}
-                        className="flex items-center gap-2.5 cursor-pointer group select-none"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleMember(m.id);
+                        }}
+                        className="flex items-center gap-2.5 cursor-pointer group select-none outline-none border-none bg-transparent p-0 text-left"
                       >
                         <div 
-                          className="w-[18px] h-[18px] rounded-[5px] border flex items-center justify-center transition-all shadow-sm"
+                          className="w-[18px] h-[18px] rounded-[5px] border flex items-center justify-center transition-all shadow-sm shrink-0 cursor-pointer"
                           style={{ 
                             backgroundColor: isChecked ? m.color : '#ffffff',
                             borderColor: isChecked ? m.color : '#d1d1d6'
@@ -294,16 +298,26 @@ export default function App() {
                             </svg>
                           )}
                         </div>
-                        <span className="text-[13px] font-medium text-[#4b5563] group-hover:text-[#1d2b45] transition-colors">{m.label}</span>
-                      </div>
+                        <span className="text-[13px] font-medium text-[#4b5563] group-hover:text-[#1d2b45] transition-colors pointer-events-none select-none">
+                          {m.label}
+                        </span>
+                      </button>
                     );
                   })}
                 </div>
-                <div className="pt-3 border-t border-[#e5e5ea] flex items-center justify-between">
-                  <div onClick={selectAllMembers} className="flex items-center gap-2 cursor-pointer group">
-                     <span className="text-[13px] font-medium text-[#4b5563] group-hover:text-[#1d2b45] transition-colors">Select all</span>
-                  </div>
-                  <button onClick={clearAllMembers} className="text-[13px] font-bold text-[#0071e3] hover:text-[#005bb5] transition-colors cursor-pointer">
+                <div className="pt-3 border-t border-[#e5e5ea] flex items-center justify-between select-none">
+                  <button 
+                    type="button"
+                    onClick={selectAllMembers} 
+                    className="text-[13px] font-medium text-[#4b5563] hover:text-[#1d2b45] transition-colors cursor-pointer bg-transparent border-none p-0"
+                  >
+                    Select all
+                  </button>
+                  <button 
+                    type="button"
+                    onClick={clearAllMembers} 
+                    className="text-[13px] font-bold text-[#0071e3] hover:text-[#005bb5] transition-colors cursor-pointer bg-transparent border-none p-0"
+                  >
                     Clear
                   </button>
                 </div>

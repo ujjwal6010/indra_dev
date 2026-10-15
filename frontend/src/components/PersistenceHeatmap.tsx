@@ -9,7 +9,6 @@ interface PersistenceHeatmapProps {
 export default function PersistenceHeatmap({ scenario, trajectory }: PersistenceHeatmapProps) {
   if (!trajectory || trajectory.length === 0) return null;
 
-  // unique hours and members
   const hours = Array.from(new Set(trajectory.map(t => t.forecast_hour))).sort((a, b) => a - b);
   const members = scenario.members;
 
@@ -19,8 +18,7 @@ export default function PersistenceHeatmap({ scenario, trajectory }: Persistence
       const m = members[i];
       const h = hours[j];
       const pt = trajectory.find(t => t.member === m && t.forecast_hour === h);
-      // value: [x (hour index), y (member index), intensity (or just 1 for presence)]
-      data.push([j, i, pt ? pt.max_intensity : 0]);
+      data.push([j, i, pt ? Number((pt.max_intensity ?? 0).toFixed(0)) : 0]);
     }
   }
 
@@ -30,10 +28,11 @@ export default function PersistenceHeatmap({ scenario, trajectory }: Persistence
       formatter: (p: any) => {
         const val = p.value[2];
         if (val === 0) return 'Not present';
-        return `${members[p.value[1]]} @ T+${hours[p.value[0]]}<br/>Peak: ${val.toFixed(0)} mm`;
+        return `<div><b>${members[p.value[1]]}</b> @ T+${hours[p.value[0]]}</div>` +
+               `<div>Peak: <b>${val} mm/24h</b></div>`;
       }
     },
-    grid: { top: 30, right: 20, bottom: 20, left: 40 },
+    grid: { top: 30, right: 20, bottom: 20, left: 45 },
     xAxis: {
       type: 'category',
       data: hours.map(h => `T+${h}`),
@@ -48,7 +47,7 @@ export default function PersistenceHeatmap({ scenario, trajectory }: Persistence
     },
     visualMap: {
       min: 0,
-      max: 200, // roughly max precip
+      max: 200,
       calculable: true,
       orient: 'horizontal',
       left: 'center',
@@ -68,7 +67,7 @@ export default function PersistenceHeatmap({ scenario, trajectory }: Persistence
   };
 
   return (
-    <div className="mt-4">
+    <div className="mt-4 select-none">
       <div className="text-xs text-[#6e6e73] uppercase tracking-widest mb-2 font-medium">Member Persistence</div>
       <div className="bg-[#f5f5f7] rounded-xl border border-[#e5e5ea] p-2">
         <ReactECharts option={option} style={{ height: '180px', width: '100%' }} />

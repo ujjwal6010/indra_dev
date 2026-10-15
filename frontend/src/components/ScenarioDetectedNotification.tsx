@@ -20,12 +20,12 @@ export default function ScenarioDetectedNotification({ scenario, onDismiss }: Sc
       const timer = setTimeout(() => { setVisible(false); setTimeout(onDismiss, 300); }, 5000);
       return () => clearTimeout(timer);
     }
-  }, [scenario]);
+  }, [scenario, onDismiss]);
 
   if (!scenario || !visible) return null;
 
   return (
-    <div className="absolute top-4 right-4 z-50 w-72 glass rounded-2xl border animate-pulse-border p-4 animate-fade-in-up"
+    <div className="absolute top-4 right-4 z-50 w-72 glass rounded-2xl border p-4 animate-fade-in-up select-none shadow-lg"
       style={{ borderColor: 'rgba(52,199,89,0.3)' }}>
       <div className="flex items-start justify-between mb-2">
         <div>
@@ -35,7 +35,7 @@ export default function ScenarioDetectedNotification({ scenario, onDismiss }: Sc
           <div className="text-[#1d1d1f] font-bold mono text-sm">{scenario.scenario_id}</div>
         </div>
         <button onClick={() => { setVisible(false); onDismiss(); }}
-          className="text-[#aeaeb2] hover:text-[#1d1d1f] text-lg leading-none transition-colors">×</button>
+          className="text-[#aeaeb2] hover:text-[#1d1d1f] text-lg leading-none transition-colors cursor-pointer p-1">×</button>
       </div>
 
       <div className="flex gap-1.5 mb-2">

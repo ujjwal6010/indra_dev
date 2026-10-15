@@ -55,33 +55,32 @@ export default function ScenarioDrawer({ scenarioId, onClose }: ScenarioDrawerPr
     : null;
 
   if (loading) return (
-    <div className="w-80 bg-white border-l border-[#e5e5ea] h-full flex items-center justify-center shadow-panel">
+    <div className="w-80 bg-white border-l border-[#e5e5ea] h-full flex items-center justify-center shadow-panel select-none">
       <div className="text-[#aeaeb2] text-sm font-medium">Loading scenario...</div>
     </div>
   );
 
   if (!scenario) return null;
 
-
   return (
-    <div ref={drawerRef} className="w-80 bg-white border-l border-[#e5e5ea] h-full overflow-y-auto flex flex-col animate-fade-in-up shadow-panel">
+    <div ref={drawerRef} className="w-80 bg-white border-l border-[#e5e5ea] h-full overflow-y-auto flex flex-col animate-fade-in-up shadow-panel z-40 select-none">
       <div className="flex items-center justify-between p-4 border-b border-[#e5e5ea]">
         <div>
-          <div className="text-xs text-[#aeaeb2] uppercase tracking-widest mb-0.5">Scenario</div>
+          <div className="text-xs text-[#aeaeb2] uppercase tracking-widest mb-0.5 font-medium">Scenario</div>
           <div className="text-[#1d1d1f] font-semibold text-lg mono">{scenarioId}</div>
         </div>
         <div className="flex items-center gap-2">
           <button
             onClick={() => exportToCsv(trajectory, `scenario_${scenarioId}_trajectory`)}
-            className="text-[9px] text-[#6e6e73] hover:text-[#1d1d1f] border border-[#e5e5ea] hover:border-[#d1d1d6] rounded-lg px-2 py-1 transition-colors font-medium"
+            className="text-[9px] text-[#6e6e73] hover:text-[#1d1d1f] border border-[#e5e5ea] hover:border-[#d1d1d6] bg-white rounded-lg px-2 py-1 transition-colors font-medium cursor-pointer"
             title="Export trajectory data to CSV"
           >CSV</button>
           <button
             onClick={() => drawerRef.current && exportElementAsPng(drawerRef.current, `scenario_${scenarioId}`)}
-            className="text-[9px] text-[#6e6e73] hover:text-[#1d1d1f] border border-[#e5e5ea] hover:border-[#d1d1d6] rounded-lg px-2 py-1 transition-colors"
+            className="text-[9px] text-[#6e6e73] hover:text-[#1d1d1f] border border-[#e5e5ea] hover:border-[#d1d1d6] bg-white rounded-lg px-2 py-1 transition-colors cursor-pointer"
             title="Export as PNG for PPT"
           >📷</button>
-          <button onClick={onClose} className="text-[#aeaeb2] hover:text-[#1d1d1f] text-xl leading-none transition-colors">×</button>
+          <button onClick={onClose} className="text-[#aeaeb2] hover:text-[#1d1d1f] text-xl leading-none transition-colors cursor-pointer p-1">×</button>
         </div>
       </div>
 
@@ -118,7 +117,7 @@ export default function ScenarioDrawer({ scenarioId, onClose }: ScenarioDrawerPr
               { label: 'Consecutive', value: `${scenario.longest_consecutive} steps` },
             ].map(({ label, value }) => (
               <div key={label} className="bg-[#f5f5f7] rounded-xl p-3 border border-[#e5e5ea]">
-                <div className="text-[10px] text-[#aeaeb2] uppercase">{label}</div>
+                <div className="text-[10px] text-[#aeaeb2] uppercase font-medium">{label}</div>
                 <div className="text-sm text-[#1d1d1f] mono font-medium mt-0.5">{value}</div>
               </div>
             ))}
@@ -130,7 +129,7 @@ export default function ScenarioDrawer({ scenarioId, onClose }: ScenarioDrawerPr
           <div>
             <div className="grid grid-cols-1 gap-2">
               <div className="bg-[#f5f5f7] rounded-xl p-3 border border-[#e5e5ea]">
-                <div className="text-[10px] text-[#aeaeb2] uppercase">Displacement</div>
+                <div className="text-[10px] text-[#aeaeb2] uppercase font-medium">Displacement</div>
                 <div className="text-sm text-[#1d1d1f] mono font-medium mt-0.5">~{displacementKm} km</div>
               </div>
             </div>

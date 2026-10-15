@@ -27,13 +27,12 @@ export default function RobustnessMatrix({ matrix, onCellClick, selectedHour, se
     matrix.find(c => c.forecast_hour === fh && c.scale_km === scale);
 
   return (
-    <div className="p-4">
+    <div className="p-4 select-none">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-1.5">
           <h3 className="text-[13px] text-[#1d2b45] uppercase tracking-widest font-bold">
             Scale Robustness Matrix
           </h3>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
         </div>
         <div className="flex items-center gap-4 text-[12px] text-[#4b5563]">
           <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#34c759]" /> Persistent</span>

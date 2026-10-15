@@ -8,12 +8,18 @@ interface TrajectoryChartProps {
 export default function TrajectoryChart({ trajectory }: TrajectoryChartProps) {
   if (!trajectory || trajectory.length === 0) return null;
 
-  // group by member
+  // Group by member and sort sequentially by forecast_hour
   const memberTracks: Record<string, [number, number, number][]> = {};
+  
   trajectory.forEach(t => {
     if (!memberTracks[t.member]) memberTracks[t.member] = [];
     // [lon, lat, forecast_hour]
     memberTracks[t.member].push([t.longitude, t.latitude, t.forecast_hour]);
+  });
+
+  // Sort each member track chronologically
+  Object.keys(memberTracks).forEach(m => {
+    memberTracks[m].sort((a, b) => a[2] - b[2]);
   });
 
   const series = Object.keys(memberTracks).map(m => {
@@ -40,17 +46,24 @@ export default function TrajectoryChart({ trajectory }: TrajectoryChartProps) {
     tooltip: { 
       trigger: 'item',
       formatter: (params: any) => {
+        if (!params || !params.value) return '';
         const [lon, lat, fh] = params.value;
-        return `${params.seriesName} @ T+${fh}<br/>Lat: ${lat.toFixed(2)}<br/>Lon: ${lon.toFixed(2)}`;
+        return `<div className="font-semibold mb-0.5" style="color: ${params.color}">${params.seriesName} @ T+${fh}</div>` +
+               `<div>Lat: <b>${lat.toFixed(2)}°N</b></div>` +
+               `<div>Lon: <b>${lon.toFixed(2)}°E</b></div>`;
       }
     },
-    grid: { top: 20, right: 20, bottom: 20, left: 40 },
+    grid: { top: 20, right: 25, bottom: 25, left: 45 },
     xAxis: {
       type: 'value',
       name: 'Lon',
       scale: true,
       nameTextStyle: { color: '#aeaeb2', fontSize: 10 },
-      axisLabel: { color: '#6e6e73', fontSize: 10 },
+      axisLabel: { 
+        color: '#6e6e73', 
+        fontSize: 10,
+        formatter: (val: number) => `${val.toFixed(1)}°E`
+      },
       splitLine: { lineStyle: { color: '#f0f0f2', type: 'dashed' } }
     },
     yAxis: {
@@ -58,14 +71,18 @@ export default function TrajectoryChart({ trajectory }: TrajectoryChartProps) {
       name: 'Lat',
       scale: true,
       nameTextStyle: { color: '#aeaeb2', fontSize: 10 },
-      axisLabel: { color: '#6e6e73', fontSize: 10 },
+      axisLabel: { 
+        color: '#6e6e73', 
+        fontSize: 10,
+        formatter: (val: number) => `${val.toFixed(1)}°N`
+      },
       splitLine: { lineStyle: { color: '#f0f0f2', type: 'dashed' } }
     },
     series
   };
 
   return (
-    <div className="mt-4">
+    <div className="mt-4 select-none">
       <div className="text-xs text-[#6e6e73] uppercase tracking-widest mb-2 font-medium">Trajectory Path</div>
       <div className="bg-[#f5f5f7] rounded-xl border border-[#e5e5ea] p-2">
         <ReactECharts option={option} style={{ height: '180px', width: '100%' }} />

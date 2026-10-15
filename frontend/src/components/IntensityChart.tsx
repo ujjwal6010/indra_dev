@@ -8,16 +8,37 @@ interface IntensityChartProps {
 export default function IntensityChart({ trajectory }: IntensityChartProps) {
   if (!trajectory || trajectory.length === 0) return null;
 
-  const hours = trajectory.map(t => `T+${t.forecast_hour}`);
-  const maxIntensities = trajectory.map(t => t.max_intensity);
-  const meanIntensities = trajectory.map(t => t.mean_intensity);
+  // Aggregate and sort by unique forecast hours to prevent duplicate/scrambled x-axis labels
+  const uniqueHours = Array.from(new Set(trajectory.map(t => t.forecast_hour))).sort((a, b) => a - b);
+
+  const maxIntensities = uniqueHours.map(fh => {
+    const pointsAtHour = trajectory.filter(t => t.forecast_hour === fh);
+    const maxVal = Math.max(...pointsAtHour.map(p => p.max_intensity ?? 0));
+    return Number(maxVal.toFixed(1));
+  });
+
+  const meanIntensities = uniqueHours.map(fh => {
+    const pointsAtHour = trajectory.filter(t => t.forecast_hour === fh);
+    const avgVal = pointsAtHour.reduce((sum, p) => sum + (p.mean_intensity ?? 0), 0) / (pointsAtHour.length || 1);
+    return Number(avgVal.toFixed(1));
+  });
 
   const option = {
-    tooltip: { trigger: 'axis' },
-    grid: { top: 30, right: 20, bottom: 20, left: 40 },
+    tooltip: { 
+      trigger: 'axis',
+      formatter: (params: any[]) => {
+        if (!params || !params.length) return '';
+        let res = `<div className="font-semibold mb-1">${params[0].name}</div>`;
+        params.forEach(p => {
+          res += `<div style="color: ${p.color}">● ${p.seriesName}: <b>${p.value} mm/24h</b></div>`;
+        });
+        return res;
+      }
+    },
+    grid: { top: 30, right: 20, bottom: 25, left: 45 },
     xAxis: {
       type: 'category',
-      data: hours,
+      data: uniqueHours.map(h => `T+${h}`),
       axisLabel: { color: '#6e6e73', fontSize: 10 },
       axisLine: { lineStyle: { color: '#e5e5ea' } }
     },
@@ -55,7 +76,7 @@ export default function IntensityChart({ trajectory }: IntensityChartProps) {
   };
 
   return (
-    <div className="mt-4">
+    <div className="mt-4 select-none">
       <div className="text-xs text-[#6e6e73] uppercase tracking-widest mb-2 font-medium">Intensity Evolution</div>
       <div className="bg-[#f5f5f7] rounded-xl border border-[#e5e5ea] p-2">
         <ReactECharts option={option} style={{ height: '180px', width: '100%' }} />

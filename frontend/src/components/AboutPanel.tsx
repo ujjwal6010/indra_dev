@@ -9,16 +9,27 @@ export default function AboutPanel({ onClose }: AboutPanelProps) {
   const panelRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div ref={panelRef} className="absolute top-4 left-4 w-96 bg-white/95 backdrop-blur-xl shadow-2xl border border-[#e5e5ea] rounded-2xl p-5 z-40 animate-fade-in-up max-h-[80vh] overflow-y-auto">
+    <div 
+      ref={panelRef} 
+      className="absolute top-4 left-4 w-96 bg-white/95 backdrop-blur-xl shadow-2xl border border-[#e5e5ea] rounded-2xl p-5 z-50 animate-fade-in-up max-h-[85vh] overflow-y-auto select-none"
+    >
       <div className="flex justify-between items-start mb-4">
         <div className="text-sm font-semibold text-[#1d1d1f]">Why This Is Different</div>
         <div className="flex items-center gap-2">
           <button
             onClick={() => panelRef.current && exportElementAsPng(panelRef.current, 'about_panel')}
-            className="text-[9px] text-[#6e6e73] hover:text-[#1d1d1f] border border-[#e5e5ea] hover:border-[#d1d1d6] rounded-lg px-2 py-1 transition-colors font-medium"
+            className="text-[9px] text-[#6e6e73] hover:text-[#1d1d1f] border border-[#e5e5ea] hover:border-[#d1d1d6] bg-white hover:bg-[#f5f5f7] rounded-lg px-2 py-1 transition-all cursor-pointer font-medium shadow-xs"
             title="Export as PNG for PPT"
-          >📷 Export</button>
-          <button onClick={onClose} className="text-[#aeaeb2] hover:text-[#1d1d1f] text-lg leading-none transition-colors">×</button>
+          >
+            📷 Export
+          </button>
+          <button 
+            onClick={onClose} 
+            className="text-[#aeaeb2] hover:text-[#1d1d1f] text-lg leading-none transition-colors cursor-pointer p-1 rounded-md hover:bg-[#f5f5f7]"
+            title="Close Panel"
+          >
+            ×
+          </button>
         </div>
       </div>
 
@@ -26,7 +37,7 @@ export default function AboutPanel({ onClose }: AboutPanelProps) {
         {/* comparison */}
         <div className="bg-[#f5f5f7] rounded-xl p-3 border border-[#e5e5ea]">
           <div className="text-[#aeaeb2] uppercase tracking-widest text-[10px] mb-1.5 font-medium">Traditional Ensemble View</div>
-          <div>Shows ensemble spread and member disagreement as a single probability field</div>
+          <div className="text-[#1d1d1f]">Shows ensemble spread and member disagreement as a single probability field</div>
           <div className="text-[10px] text-[#aeaeb2] mt-1">{`→ "There is 40% chance of >100mm rainfall here"`}</div>
         </div>
 
@@ -54,11 +65,13 @@ export default function AboutPanel({ onClose }: AboutPanelProps) {
               { step: '5', title: 'Test Persistence', desc: 'Track which member-groups recur across consecutive timesteps. Transient groupings are filtered out' },
               { step: '6', title: 'Scale Robustness', desc: 'Repeat at 50/100/150/200 km thresholds. Scenarios surviving multiple scales = robust signal' },
             ].map(({ step, title, desc }) => (
-              <div key={step} className="flex gap-2">
-                <div className="w-5 h-5 rounded-full bg-[#e8f4fd] border border-[#0071e3]/20 flex items-center justify-center text-[10px] text-[#0071e3] mono shrink-0 font-medium">{step}</div>
+              <div key={step} className="flex gap-2 items-start">
+                <div className="w-5 h-5 rounded-full bg-[#e8f4fd] border border-[#0071e3]/20 flex items-center justify-center text-[10px] text-[#0071e3] mono shrink-0 font-medium">
+                  {step}
+                </div>
                 <div>
                   <span className="text-[#1d1d1f] text-[11px] font-medium">{title}</span>
-                  <span className="text-[10px] text-[#aeaeb2] ml-1">— {desc}</span>
+                  <span className="text-[10px] text-[#8e8e93] ml-1">— {desc}</span>
                 </div>
               </div>
             ))}
@@ -98,7 +111,9 @@ export default function AboutPanel({ onClose }: AboutPanelProps) {
           <div className="text-[10px] text-[#aeaeb2] uppercase tracking-widest mb-1.5 font-medium">Tech Stack</div>
           <div className="flex flex-wrap gap-1">
             {['Python', 'FastAPI', 'xarray', 'SciPy', 'NetworkX', 'React', 'TypeScript', 'MapLibre GL', 'ECharts', 'Tailwind'].map(t => (
-              <span key={t} className="text-[9px] bg-[#f5f5f7] border border-[#e5e5ea] rounded-lg px-2 py-0.5 text-[#6e6e73] mono">{t}</span>
+              <span key={t} className="text-[9px] bg-[#f5f5f7] border border-[#e5e5ea] rounded-lg px-2 py-0.5 text-[#6e6e73] mono">
+                {t}
+              </span>
             ))}
           </div>
         </div>

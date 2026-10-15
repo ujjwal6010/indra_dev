@@ -29,7 +29,7 @@ export default function ScenarioPanel({ scenarios, selectedId, currentHour, onSe
     return (
       <button
         onClick={() => onSelect(scenario.scenario_id)}
-        className={`w-full text-left p-4 rounded-xl border transition-all mb-3 shadow-sm group ${
+        className={`w-full text-left p-4 rounded-xl border transition-all mb-3 shadow-sm group cursor-pointer ${
           isSelected
             ? 'bg-white border-[#0071e3] ring-1 ring-[#0071e3]'
             : 'bg-white border-[#e5e5ea] hover:border-[#d1d1d6] hover:shadow-md'
@@ -51,7 +51,6 @@ export default function ScenarioPanel({ scenarios, selectedId, currentHour, onSe
               </div>
             ))}
           </div>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-0.5 group-hover:stroke-[#1d2b45] transition-all"><polyline points="9 18 15 12 9 6"/></svg>
         </div>
 
         <div className="flex items-center gap-2 text-[11px] font-medium text-[#6e6e73]">
@@ -66,13 +65,11 @@ export default function ScenarioPanel({ scenarios, selectedId, currentHour, onSe
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full select-none">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1d2b45" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
           <h3 className="text-[12px] font-bold text-[#1d2b45] uppercase tracking-wider">Scenario Intelligence</h3>
         </div>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="cursor-pointer hover:stroke-[#6e6e73] transition-colors"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
       </div>
 
       <div className="flex-1 -mx-4 px-4 overflow-y-auto">
@@ -96,21 +93,6 @@ export default function ScenarioPanel({ scenarios, selectedId, currentHour, onSe
             No persistent scenarios detected<br />at current scale setting.
           </div>
         )}
-
-        {/* Additional bottom buttons */}
-        <div className="mt-4 space-y-2 pb-4">
-          <button className="w-full flex items-center justify-center gap-2 py-3 bg-white border border-[#e5e5ea] rounded-xl text-[13px] font-semibold text-[#4b5563] hover:text-[#1d2b45] hover:border-[#d1d1d6] transition-all shadow-sm">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            Add scenario group
-          </button>
-          <button className="w-full flex items-center justify-between px-4 py-3 bg-white border border-[#e5e5ea] rounded-xl text-[13px] font-semibold text-[#4b5563] hover:text-[#1d2b45] hover:border-[#d1d1d6] transition-all shadow-sm group">
-            <div className="flex items-center gap-2">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-              Manage groups
-            </div>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:stroke-[#1d2b45] group-hover:translate-x-0.5 transition-all"><polyline points="9 18 15 12 9 6"/></svg>
-          </button>
-        </div>
       </div>
     </div>
   );

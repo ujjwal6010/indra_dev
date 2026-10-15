@@ -23,12 +23,10 @@ export default function EventExplorer({ onHourChange }: EventExplorerProps) {
   const [hourFilter, setHourFilter] = useState<number | null>(null);
   const [tracks, setTracks] = useState<TrackPoint[]>([]);
 
-  // fetch all events on mount
   useEffect(() => {
     api.getEvents().then(setEvents).catch(console.error);
   }, []);
 
-  // when a specific event is selected, load its member's track
   useEffect(() => {
     if (!selectedEvent) { setTracks([]); return; }
     api.getTracks(selectedEvent.member)
@@ -36,17 +34,14 @@ export default function EventExplorer({ onHourChange }: EventExplorerProps) {
       .catch(console.error);
   }, [selectedEvent]);
 
-  // apply filters
   const filtered = events.filter(e => {
     if (memberFilter && e.member !== memberFilter) return false;
     if (hourFilter !== null && e.forecast_hour !== hourFilter) return false;
     return true;
   });
 
-  // number the events for display
   const numbered = filtered.map((evt, i) => ({ ...evt, displayNum: i + 1 }));
 
-  // evolution chart for selected event
   const evolutionOption = selectedEvent && tracks.length > 0 ? (() => {
     const memberTrack = tracks.filter(t => t.member === selectedEvent.member);
     memberTrack.sort((a, b) => a.forecast_hour - b.forecast_hour);
@@ -69,7 +64,7 @@ export default function EventExplorer({ onHourChange }: EventExplorerProps) {
         {
           name: 'Peak',
           type: 'line', smooth: true,
-          data: memberTrack.map(t => t.max_intensity),
+          data: memberTrack.map(t => Math.round(t.max_intensity)),
           itemStyle: { color: MEMBER_COLORS[selectedEvent.member] || '#6e6e73' },
           areaStyle: {
             color: {
@@ -84,7 +79,7 @@ export default function EventExplorer({ onHourChange }: EventExplorerProps) {
         {
           name: 'Mean',
           type: 'line', smooth: true,
-          data: memberTrack.map(t => t.mean_intensity),
+          data: memberTrack.map(t => Math.round(t.mean_intensity)),
           itemStyle: { color: '#aeaeb2' },
           lineStyle: { type: 'dashed', width: 1.5 }
         }
@@ -93,22 +88,21 @@ export default function EventExplorer({ onHourChange }: EventExplorerProps) {
   })() : null;
 
   return (
-    <div className="flex h-full">
-      {/* left: filters + event list */}
+    <div className="flex h-full select-none">
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* filters row */}
-        <div className="flex items-center gap-3 px-3 py-2 border-b border-[#e5e5ea] shrink-0">
+        <div className="flex items-center gap-3 px-3 py-2 border-b border-[#e5e5ea] shrink-0 bg-white">
           <div className="flex items-center gap-1">
             <span className="text-[9px] text-[#aeaeb2] uppercase mr-1 font-medium">Member:</span>
             <button
               onClick={() => setMemberFilter(null)}
-              className={`text-[9px] px-1.5 py-0.5 rounded-md border font-medium ${!memberFilter ? 'bg-[#e8f4fd] border-[#0071e3]/30 text-[#0071e3]' : 'border-[#e5e5ea] text-[#aeaeb2] hover:text-[#6e6e73]'}`}
+              className={`text-[9px] px-1.5 py-0.5 rounded-md border font-medium cursor-pointer transition-colors ${!memberFilter ? 'bg-[#e8f4fd] border-[#0071e3]/30 text-[#0071e3]' : 'border-[#e5e5ea] text-[#aeaeb2] hover:text-[#6e6e73]'}`}
             >All</button>
             {ALL_MEMBERS.map(m => (
               <button
                 key={m}
                 onClick={() => setMemberFilter(memberFilter === m ? null : m)}
-                className={`text-[9px] px-1.5 py-0.5 rounded-md border font-medium ${memberFilter === m ? 'bg-[#e8f4fd] border-[#0071e3]/30 text-[#0071e3]' : 'border-[#e5e5ea] text-[#aeaeb2] hover:text-[#6e6e73]'}`}
+                className={`text-[9px] px-1.5 py-0.5 rounded-md border font-medium cursor-pointer transition-colors ${memberFilter === m ? 'bg-[#e8f4fd] border-[#0071e3]/30 text-[#0071e3]' : 'border-[#e5e5ea] text-[#aeaeb2] hover:text-[#6e6e73]'}`}
               >
                 <span className="inline-block w-1.5 h-1.5 rounded-full mr-0.5" style={{ background: MEMBER_COLORS[m] }} />
                 {m.slice(-2)}
@@ -119,13 +113,13 @@ export default function EventExplorer({ onHourChange }: EventExplorerProps) {
             <span className="text-[9px] text-[#aeaeb2] uppercase mr-1 font-medium">Hour:</span>
             <button
               onClick={() => setHourFilter(null)}
-              className={`text-[9px] px-1.5 py-0.5 rounded-md border font-medium ${hourFilter === null ? 'bg-[#e8f4fd] border-[#0071e3]/30 text-[#0071e3]' : 'border-[#e5e5ea] text-[#aeaeb2] hover:text-[#6e6e73]'}`}
+              className={`text-[9px] px-1.5 py-0.5 rounded-md border font-medium cursor-pointer transition-colors ${hourFilter === null ? 'bg-[#e8f4fd] border-[#0071e3]/30 text-[#0071e3]' : 'border-[#e5e5ea] text-[#aeaeb2] hover:text-[#6e6e73]'}`}
             >All</button>
             {FORECAST_HOURS.map(h => (
               <button
                 key={h}
                 onClick={() => setHourFilter(hourFilter === h ? null : h)}
-                className={`text-[9px] px-1 py-0.5 rounded-md border mono font-medium ${hourFilter === h ? 'bg-[#e8f4fd] border-[#0071e3]/30 text-[#0071e3]' : 'border-[#e5e5ea] text-[#aeaeb2] hover:text-[#6e6e73]'}`}
+                className={`text-[9px] px-1 py-0.5 rounded-md border mono font-medium cursor-pointer transition-colors ${hourFilter === h ? 'bg-[#e8f4fd] border-[#0071e3]/30 text-[#0071e3]' : 'border-[#e5e5ea] text-[#aeaeb2] hover:text-[#6e6e73]'}`}
               >{h}</button>
             ))}
           </div>
@@ -141,7 +135,7 @@ export default function EventExplorer({ onHourChange }: EventExplorerProps) {
                 <button
                   key={evt.event_id}
                   onClick={() => setSelectedEvent(isSelected ? null : evt)}
-                  className={`text-left bg-[#f5f5f7] border rounded-xl p-2.5 transition-all ${
+                  className={`text-left bg-[#f5f5f7] border rounded-xl p-2.5 transition-all cursor-pointer ${
                     isSelected ? 'border-[#0071e3]/40 ring-1 ring-[#0071e3]/20 bg-white shadow-sm' : 'border-[#e5e5ea] hover:border-[#d1d1d6] hover:bg-white'
                   }`}
                 >
@@ -161,13 +155,13 @@ export default function EventExplorer({ onHourChange }: EventExplorerProps) {
         </div>
       </div>
 
-      {/* right: detail panel when event selected */}
+      {/* right detail panel */}
       {selectedEvent && (
         <div className="w-64 border-l border-[#e5e5ea] bg-white flex flex-col overflow-y-auto shrink-0">
           <div className="p-3 border-b border-[#e5e5ea]">
             <div className="flex items-center justify-between">
               <div className="text-[10px] text-[#aeaeb2] uppercase tracking-widest font-medium">Event Detail</div>
-              <button onClick={() => setSelectedEvent(null)} className="text-[#aeaeb2] hover:text-[#1d1d1f] text-sm transition-colors">×</button>
+              <button onClick={() => setSelectedEvent(null)} className="text-[#aeaeb2] hover:text-[#1d1d1f] text-sm transition-colors cursor-pointer">×</button>
             </div>
             <div className="text-sm mono text-[#1d1d1f] font-semibold mt-1">{selectedEvent.event_id}</div>
           </div>
@@ -183,13 +177,12 @@ export default function EventExplorer({ onHourChange }: EventExplorerProps) {
                 { label: 'Location', value: `${selectedEvent.latitude_centroid.toFixed(1)}°N ${selectedEvent.longitude_centroid.toFixed(1)}°E` },
               ].map(({ label, value, color }) => (
                 <div key={label} className="bg-[#f5f5f7] rounded-xl p-2 border border-[#e5e5ea]">
-                  <div className="text-[9px] text-[#aeaeb2] uppercase">{label}</div>
+                  <div className="text-[9px] text-[#aeaeb2] uppercase font-medium">{label}</div>
                   <div className="text-[11px] text-[#1d1d1f] mono mt-0.5 font-medium" style={color ? { color } : undefined}>{value}</div>
                 </div>
               ))}
             </div>
 
-            {/* evolution across forecast hours */}
             {evolutionOption && (
               <div>
                 <div className="text-[10px] text-[#6e6e73] uppercase tracking-widest mb-1 font-medium">
@@ -203,7 +196,7 @@ export default function EventExplorer({ onHourChange }: EventExplorerProps) {
 
             <button
               onClick={() => { onHourChange(selectedEvent.forecast_hour); }}
-              className="w-full text-[10px] py-2 rounded-xl border border-[#0071e3]/30 text-[#0071e3] hover:bg-[#e8f4fd] transition-colors uppercase tracking-widest font-medium"
+              className="w-full text-[10px] py-2 rounded-xl border border-[#0071e3]/30 text-[#0071e3] hover:bg-[#e8f4fd] transition-colors uppercase tracking-widest font-medium cursor-pointer"
             >
               Jump to T+{selectedEvent.forecast_hour} on map
             </button>

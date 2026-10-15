@@ -195,3 +195,12 @@ html, body, #root {
   .w-64 { width: 14rem; }
   .w-80 { width: 18rem; }
 }
+
+/* Add to the bottom of index.css */
+button, 
+.card-interactive, 
+.matrix-cell, 
+.timeline-slider {
+  user-select: none;
+  -webkit-user-select: none;
+}

@@ -5,50 +5,65 @@ import type {
 
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
-async function fetchJson<T>(path: string): Promise<T> {
-  const res = await fetch(`${BASE_URL}${path}`);
-  if (!res.ok) throw new Error(`API error ${res.status}: ${path}`);
+async function fetchJson<T>(path: string, signal?: AbortSignal): Promise<T> {
+  const res = await fetch(`${BASE_URL}${path}`, { signal });
+  if (!res.ok) {
+    let errorMsg = `API error ${res.status}: ${path}`;
+    try {
+      const errBody = await res.json();
+      if (errBody.detail) errorMsg = errBody.detail;
+    } catch {
+      // Fallback to HTTP status error text if response is not JSON
+    }
+    throw new Error(errorMsg);
+  }
   return res.json();
 }
 
+function buildQuery(paramsRecord: Record<string, string | number | undefined | null>): string {
+  const params = new URLSearchParams();
+  Object.entries(paramsRecord).forEach(([key, val]) => {
+    if (val != null && val !== '') {
+      params.set(key, String(val));
+    }
+  });
+  const queryString = params.toString();
+  return queryString ? `?${queryString}` : '';
+}
+
 export const api = {
-  getCycles: () => fetchJson<Cycle[]>('/cycles'),
+  getCycles: (signal?: AbortSignal) => 
+    fetchJson<Cycle[]>('/cycles', signal),
 
-  getForecastState: (hour: number, scaleKm: number = 50) =>
-    fetchJson<ForecastState>(`/forecast/${hour}?scale_km=${scaleKm}`),
+  getForecastState: (hour: number, scaleKm: number = 50, signal?: AbortSignal) =>
+    fetchJson<ForecastState>(`/forecast/${hour}${buildQuery({ scale_km: scaleKm })}`, signal),
 
-  getEvents: (forecastHour?: number, member?: string) => {
-    const params = new URLSearchParams();
-    if (forecastHour != null) params.set('forecast_hour', String(forecastHour));
-    if (member) params.set('member', member);
-    return fetchJson<ExtremeEvent[]>(`/events?${params}`);
+  getEvents: (forecastHour?: number, member?: string, signal?: AbortSignal) => {
+    const query = buildQuery({ forecast_hour: forecastHour, member });
+    return fetchJson<ExtremeEvent[]>(`/events${query}`, signal);
   },
 
-  getTracks: (member?: string, forecastHour?: number) => {
-    const params = new URLSearchParams();
-    if (member) params.set('member', member);
-    if (forecastHour != null) params.set('forecast_hour', String(forecastHour));
-    return fetchJson<TrackPoint[]>(`/tracks?${params}`);
+  getTracks: (member?: string, forecastHour?: number, signal?: AbortSignal) => {
+    const query = buildQuery({ member, forecast_hour: forecastHour });
+    return fetchJson<TrackPoint[]>(`/tracks${query}`, signal);
   },
 
-  getScenarios: (scaleKm?: number, minTimesteps?: number) => {
-    const params = new URLSearchParams();
-    if (scaleKm != null) params.set('scale_km', String(scaleKm));
-    if (minTimesteps != null) params.set('min_timesteps', String(minTimesteps));
-    return fetchJson<ScenarioPersistence[]>(`/scenarios?${params}`);
+  getScenarios: (scaleKm?: number, minTimesteps?: number, signal?: AbortSignal) => {
+    const query = buildQuery({ scale_km: scaleKm, min_timesteps: minTimesteps });
+    return fetchJson<ScenarioPersistence[]>(`/scenarios${query}`, signal);
   },
 
-  getScenarioDetail: (scenarioId: string) =>
-    fetchJson<ScenarioDetail>(`/scenarios/${scenarioId}`),
+  getScenarioDetail: (scenarioId: string, signal?: AbortSignal) =>
+    fetchJson<ScenarioDetail>(`/scenarios/${scenarioId}`, signal),
 
-  getScenarioTrajectory: (scenarioId: string) =>
-    fetchJson<TrackPoint[]>(`/scenarios/${scenarioId}/trajectory`),
+  getScenarioTrajectory: (scenarioId: string, signal?: AbortSignal) =>
+    fetchJson<TrackPoint[]>(`/scenarios/${scenarioId}/trajectory`, signal),
 
-  getScenarioAtmosphere: (scenarioId: string) =>
-    fetchJson(`/scenarios/${scenarioId}/atmosphere`),
+  getScenarioAtmosphere: (scenarioId: string, signal?: AbortSignal) =>
+    fetchJson<any>(`/scenarios/${scenarioId}/atmosphere`, signal),
 
-  getScaleAnalysis: (scaleKm?: number) => {
-    const params = scaleKm != null ? `?scale_km=${scaleKm}` : '';
-    return fetchJson<RobustnessCell[]>(`/scale-analysis${params}`);
+  getScaleAnalysis: (scaleKm?: number, signal?: AbortSignal) => {
+    const query = buildQuery({ scale_km: scaleKm });
+    return fetchJson<RobustnessCell[]>(`/scale-analysis${query}`, signal);
   },
 };

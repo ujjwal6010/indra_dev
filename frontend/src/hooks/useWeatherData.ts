@@ -9,12 +9,24 @@ export function useForecastState(hour: number, scaleKm: number) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let active = true;
     setLoading(true);
     setError(null);
+
     api.getForecastState(hour, scaleKm)
-      .then(setData)
-      .catch(e => setError(e.message))
-      .finally(() => setLoading(false));
+      .then(res => {
+        if (active) setData(res);
+      })
+      .catch(e => {
+        if (active) setError(e.message || 'Failed to fetch forecast state');
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
   }, [hour, scaleKm]);
 
   return { data, loading, error };
@@ -25,11 +37,21 @@ export function useScenarios(scaleKm: number) {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    let active = true;
     setLoading(true);
+
     api.getScenarios(scaleKm)
-      .then(setScenarios)
+      .then(res => {
+        if (active) setScenarios(res);
+      })
       .catch(console.error)
-      .finally(() => setLoading(false));
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
   }, [scaleKm]);
 
   return { scenarios, loading };
@@ -39,9 +61,17 @@ export function useScaleAnalysis() {
   const [matrix, setMatrix] = useState<RobustnessCell[]>([]);
 
   useEffect(() => {
+    let active = true;
+
     api.getScaleAnalysis()
-      .then(setMatrix)
+      .then(res => {
+        if (active) setMatrix(res);
+      })
       .catch(console.error);
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   return { matrix };
@@ -51,9 +81,17 @@ export function useCycles() {
   const [cycles, setCycles] = useState<Cycle[]>([]);
 
   useEffect(() => {
+    let active = true;
+
     api.getCycles()
-      .then(setCycles)
+      .then(res => {
+        if (active) setCycles(res);
+      })
       .catch(console.error);
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   return { cycles };
@@ -63,16 +101,27 @@ export function useForecastReplay(onHourChange: (h: number) => void) {
   const [isPlaying, setIsPlaying] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const hourIndexRef = useRef(0);
+  const onHourChangeRef = useRef(onHourChange);
 
-  const start = useCallback((startHour: number) => {
-    hourIndexRef.current = FORECAST_HOURS.indexOf(startHour);
-    if (hourIndexRef.current < 0) hourIndexRef.current = 0;
-    setIsPlaying(true);
-  }, []);
+  // Keep callback ref updated to prevent stale closures inside interval
+  useEffect(() => {
+    onHourChangeRef.current = onHourChange;
+  }, [onHourChange]);
 
   const stop = useCallback(() => {
     setIsPlaying(false);
-    if (intervalRef.current) clearInterval(intervalRef.current);
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  }, []);
+
+  const start = useCallback((startHour: number) => {
+    hourIndexRef.current = FORECAST_HOURS.indexOf(startHour);
+    if (hourIndexRef.current < 0 || hourIndexRef.current >= FORECAST_HOURS.length - 1) {
+      hourIndexRef.current = 0;
+    }
+    setIsPlaying(true);
   }, []);
 
   useEffect(() => {
@@ -83,11 +132,17 @@ export function useForecastReplay(onHourChange: (h: number) => void) {
           stop();
           return;
         }
-        onHourChange(FORECAST_HOURS[hourIndexRef.current]);
+        onHourChangeRef.current(FORECAST_HOURS[hourIndexRef.current]);
       }, 1200);
     }
-    return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
-  }, [isPlaying, onHourChange, stop]);
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
+  }, [isPlaying, stop]);
 
   return { isPlaying, start, stop };
 }

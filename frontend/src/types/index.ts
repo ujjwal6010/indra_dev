@@ -8,10 +8,10 @@ export interface Member {
 
 export const MEMBERS: Member[] = [
   { id: "gep01", label: "GEP 01", color: "#f97316" },
-  { id: "gep02", label: "GEP 02", color: "#3b82f6" },
-  { id: "gep03", label: "GEP 03", color: "#22c55e" },
-  { id: "gep04", label: "GEP 04", color: "#a855f7" },
-  { id: "gep05", label: "GEP 05", color: "#ec4899" },
+  { id: "gep02", label: "GEP 02", color: "#0071e3" },
+  { id: "gep03", label: "GEP 03", color: "#34c759" },
+  { id: "gep04", label: "GEP 04", color: "#af52de" },
+  { id: "gep05", label: "GEP 05", color: "#ff2d55" },
 ];
 
 export const FORECAST_HOURS = [24, 30, 36, 42, 48, 54, 60, 66, 72];
